@@ -4,10 +4,11 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
+  workflow_dispatch:   # lets you run workflow manually from the Actions tab
 
 jobs:
   build-test-run:
-    # This targets your self-hosted runner
+    # Make sure these labels match your runner in GitHub Settings → Actions → Runners
     runs-on: [self-hosted, Windows, X64]
 
     steps:
@@ -19,7 +20,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          cache: maven
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: '3.9.6'   # you can change version if needed
 
       - name: Build & test
         run: mvn -B -q verify
